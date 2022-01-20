@@ -56,7 +56,7 @@ const userPost = async (req, res) => {
 
 const userDelete = async (req, res) => {
 
-    const { id } = req.params;
+    const {id} = req.params;
 
     //const user = await User.findByIdAndDelete( id );
 
