@@ -7,6 +7,7 @@ const { generateJWT } = require('../helpers/generate-jwt');
 const { googleVerify } = require('../helpers/google-verify');
 
 
+
 const login = async (req, res = response) => {
 
     const { email, password } = req.body;
@@ -59,6 +60,7 @@ const googleSingIn = async (req, res = response) => {
         
         let user = await User.findOne( { email } );
 
+
         if (!user) {
             // i have to create it
             const data = {
@@ -66,13 +68,14 @@ const googleSingIn = async (req, res = response) => {
                 email,
                 password: ':P',
                 img,
-                google: true
+                google: true,
+                role: "USER_ROLE"
             };
 
             user = new User( data );
             await user.save();
         }
-
+        
         // if user in DB
         if (!user.status) {
             return res.status(401).json({
@@ -92,7 +95,8 @@ const googleSingIn = async (req, res = response) => {
     } catch (error) {
         res.status(400).json({
             ok: false,
-            msg: 'Token could not be verified'
+            msg: 'Token could not be verified',
+            error
         })
     }  
 }
