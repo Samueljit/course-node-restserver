@@ -1,6 +1,29 @@
 const { response } = require("express");
 const { Category } = require('../models')
 
+
+const getCategories = async (req, res = response) => {
+
+    const { limit = 5, from = 0 } = req.query;
+    const query = {status: true};
+
+    const [total, categories ] = await Promise.all([ 
+        Category.countDocuments(query),
+        Category.find( query )
+        .skip(Number(from))
+        .limit(Number(limit))
+    ]);
+
+    res.json({
+        total,
+        categories
+    });
+
+}
+
+// getCategory - populate { category }
+
+
 const createCategory = async (req, res = response) => {
 
     const name = req.body.name.toUpperCase();
@@ -29,7 +52,12 @@ const createCategory = async (req, res = response) => {
 }
 
 
+// uptdateCategory 
+
+// deleteCategory - status:false
+
 
 module.exports = {
-    createCategory
+    createCategory,
+    getCategories
 }

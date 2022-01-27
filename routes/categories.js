@@ -2,17 +2,18 @@ const { Router } = require('express');
 const { check } = require('express-validator');
 
 const { validateJWT, validateFields } = require('../middlewares');
-const { createCategory } = require('../controller/categories');
+const { createCategory, getCategories } = require('../controller/categories');
 
 const router = Router();
 
 // get all categories - public
-router.get('/', (req, res) => {
-    res.json('get');
-});
+router.get('/', getCategories);
 
 // one category by id - public
-router.get('/:id', (req, res) => {
+router.get('/:id', [
+    // check('id').custom(categoryExist)
+],
+    (req, res) => {
     res.json('get - id');
 });
 
