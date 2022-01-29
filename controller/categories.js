@@ -10,6 +10,7 @@ const getCategories = async (req, res = response) => {
     const [total, categories ] = await Promise.all([ 
         Category.countDocuments(query),
         Category.find( query )
+        .populate('user', 'name')
         .skip(Number(from))
         .limit(Number(limit))
     ]);
@@ -21,7 +22,16 @@ const getCategories = async (req, res = response) => {
 
 }
 
-// getCategory - populate { category }
+const getCategory = async (req, res = response) => {
+
+
+    const { id } = req.params;
+    const category = await Category.findById( id )
+                                   .populate('user', 'name');
+
+    res.json( category );
+
+}
 
 
 const createCategory = async (req, res = response) => {
@@ -52,12 +62,35 @@ const createCategory = async (req, res = response) => {
 }
 
 
-// uptdateCategory 
+const uptdateCategory = async(req, res = response) => {
 
-// deleteCategory - status:false
+
+    const { id } = req.params;
+    const { status, user, ...data } = req.body;
+
+    data.name = data.name.toUpperCase();
+    data.user = req.user._id;
+
+    const category = await Category.findByIdAndUpdate(id, data, {new: true});
+
+    res.json( category );
+
+}
+
+const deleteCategory = async (req, res = response) => {
+
+    const { id } = req.params;
+    const deleteCat = await Category.findByIdAndUpdate(id , { status: false}, { new: true });
+    
+    res.json( deleteCat );
+
+}
 
 
 module.exports = {
     createCategory,
-    getCategories
+    getCategories,
+    getCategory,
+    uptdateCategory,
+    deleteCategory
 }
