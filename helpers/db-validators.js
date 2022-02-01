@@ -1,53 +1,75 @@
 const Role = require('../models/role');
-const {User, Category, Product} = require('../models');
+const { Usuario, Categoria, Producto } = require('../models');
 
-const  validateRole = async (role = '') => {
+const esRoleValido = async(rol = '') => {
 
-    const existRole = await Role.findOne( { role } );
-    if (!existRole) {
-            throw new Error(`The role: ${role} is not registered in the DB`);
+    const existeRol = await Role.findOne({ rol });
+    if ( !existeRol ) {
+        throw new Error(`El rol ${ rol } no está registrado en la BD`);
     }
 }
 
-const validateEmail = async(email = '') => {
+const emailExiste = async( correo = '' ) => {
 
-    const emailExists = await User.findOne({ email });
-    if (emailExists) {
-        throw new Error(`The email: ${email} already exists in the DB`);
+    // Verificar si el correo existe
+    const existeEmail = await Usuario.findOne({ correo });
+    if ( existeEmail ) {
+        throw new Error(`El correo: ${ correo }, ya está registrado`);
     }
 }
 
-const validateUserExistsByID = async( id ) => {
+const existeUsuarioPorId = async( id ) => {
 
-    const userExist = await User.findById( id );
-    if (!userExist) {
-        throw new Error(`The id: ${id} not exists`);
-        }
-} 
-
-// categories
-const categoryExistByID = async ( id ) => {
-
-    const categoryExist = await Category.findById( id );
-    if (!categoryExist) {
-        throw new Error(`The id: ${id} not exists`);
+    // Verificar si el correo existe
+    const existeUsuario = await Usuario.findById(id);
+    if ( !existeUsuario ) {
+        throw new Error(`El id no existe ${ id }`);
     }
-} 
+}
 
-//products
-// categories
-const productExistByID = async ( id ) => {
+/**
+ * Categorias
+ */
+const existeCategoriaPorId = async( id ) => {
 
-    const productExist = await Product.findById( id );
-    if (!productExist) {
-        throw new Error(`The id: ${id} not exists`);
+    // Verificar si el correo existe
+    const existeCategoria = await Categoria.findById(id);
+    if ( !existeCategoria ) {
+        throw new Error(`El id no existe ${ id }`);
     }
-} 
+}
+
+/**
+ * Productos
+ */
+const existeProductoPorId = async( id ) => {
+
+    // Verificar si el correo existe
+    const existeProducto = await Producto.findById(id);
+    if ( !existeProducto ) {
+        throw new Error(`El id no existe ${ id }`);
+    }
+}
+
+/**
+ * Validar colecciones permitidas
+ */
+const coleccionesPermitidas = ( coleccion = '', colecciones = []) => {
+
+    const incluida = colecciones.includes( coleccion );
+    if ( !incluida ) {
+        throw new Error(`La colección ${ coleccion } no es permitida, ${ colecciones }`);
+    }
+    return true;
+}
+
 
 module.exports = {
-    validateRole,
-    validateEmail,
-    validateUserExistsByID,
-    categoryExistByID,
-    productExistByID
+    esRoleValido,
+    emailExiste,
+    existeUsuarioPorId,
+    existeCategoriaPorId,
+    existeProductoPorId,
+    coleccionesPermitidas
 }
+
